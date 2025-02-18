@@ -57,7 +57,8 @@ except ImportError:
 
 def check_compatibility(urllib3_version, chardet_version, charset_normalizer_version):
     urllib3_version = urllib3_version.split(".")
-    assert urllib3_version != ["dev"]  # Verify urllib3 isn't installed from git.
+    if urllib3_version == ["dev"]:
+        raise AssertionError
 
     # Sometimes, urllib3 only reports its version as 16.1.
     if len(urllib3_version) == 2:
@@ -67,21 +68,25 @@ def check_compatibility(urllib3_version, chardet_version, charset_normalizer_ver
     major, minor, patch = urllib3_version  # noqa: F811
     major, minor, patch = int(major), int(minor), int(patch)
     # urllib3 >= 1.21.1
-    assert major >= 1
+    if major < 1:
+        raise AssertionError
     if major == 1:
-        assert minor >= 21
+        if minor < 21:
+            raise AssertionError
 
     # Check charset_normalizer for compatibility.
     if chardet_version:
         major, minor, patch = chardet_version.split(".")[:3]
         major, minor, patch = int(major), int(minor), int(patch)
         # chardet_version >= 3.0.2, < 6.0.0
-        assert (3, 0, 2) <= (major, minor, patch) < (6, 0, 0)
+        if not (3, 0, 2) <= (major, minor, patch) < (6, 0, 0):
+            raise AssertionError
     elif charset_normalizer_version:
         major, minor, patch = charset_normalizer_version.split(".")[:3]
         major, minor, patch = int(major), int(minor), int(patch)
         # charset_normalizer >= 2.0.0 < 4.0.0
-        assert (2, 0, 0) <= (major, minor, patch) < (4, 0, 0)
+        if not (2, 0, 0) <= (major, minor, patch) < (4, 0, 0):
+            raise AssertionError
     else:
         warnings.warn(
             "Unable to find acceptable character detection dependency "
