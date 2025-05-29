@@ -90,7 +90,6 @@ class HTTPBasicAuth(AuthBase):
 
     def __ne__(self, other):
         return not self == other
-
     def __call__(self, r):
         r.headers["Authorization"] = _basic_auth_str(self.username, self.password)
         return r
@@ -140,7 +139,7 @@ class HTTPDigestAuth(AuthBase):
         else:
             _algorithm = algorithm.upper()
         # lambdas assume digest modules are imported at the top level
-        if _algorithm == "MD5" or _algorithm == "MD5-SESS":
+        if _algorithm in ("MD5", "MD5-SESS"):
 
             def md5_utf8(x):
                 if isinstance(x, str):
