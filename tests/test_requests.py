@@ -1462,10 +1462,10 @@ class TestRequests:
     @pytest.mark.parametrize(
         "exception, args, expected",
         (
-            (urllib3.exceptions.ProtocolError, tuple(), ChunkedEncodingError),
-            (urllib3.exceptions.DecodeError, tuple(), ContentDecodingError),
+            (urllib3.exceptions.ProtocolError, (), ChunkedEncodingError),
+            (urllib3.exceptions.DecodeError, (), ContentDecodingError),
             (urllib3.exceptions.ReadTimeoutError, (None, "", ""), ConnectionError),
-            (urllib3.exceptions.SSLError, tuple(), RequestsSSLError),
+            (urllib3.exceptions.SSLError, (), RequestsSSLError),
         ),
     )
     def test_iter_content_wraps_exceptions(self, httpbin, exception, args, expected):
