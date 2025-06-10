@@ -106,7 +106,7 @@ _codes = {
 codes = LookupDict(name="status_codes")
 
 
-def _init():
+def _init(current_doc):
     for code, titles in _codes.items():
         for title in titles:
             setattr(codes, title, code)
@@ -117,12 +117,12 @@ def _init():
         names = ", ".join(f"``{n}``" for n in _codes[code])
         return "* %d: %s" % (code, names)
 
-    global __doc__
-    __doc__ = (
-        __doc__ + "\n" + "\n".join(doc(code) for code in sorted(_codes))
-        if __doc__ is not None
+    new_doc = (
+        current_doc + "\n" + "\n".join(doc(code) for code in sorted(_codes))
+        if current_doc is not None
         else None
     )
+    return new_doc
 
 
-_init()
+__doc__ = _init(__doc__)
